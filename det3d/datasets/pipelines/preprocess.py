@@ -46,7 +46,7 @@ class Preprocess(object):
         res["mode"] = self.mode
 
         points = res["lidar"]["points"]
-
+        # print("Start preprocessing, points.shape = ", points.shape)
         if self.mode == "train":
             anno_dict = res["lidar"]["annotations"]
             gt_dict = {
@@ -99,7 +99,7 @@ class Preprocess(object):
         np.random.shuffle(points) # shuffle is a little slow.
         
         res["lidar"]["points"] = points
-
+        # print("Done preprocessing, points.shape = ", points.shape)
         return res, info
 
 @PIPELINES.register_module

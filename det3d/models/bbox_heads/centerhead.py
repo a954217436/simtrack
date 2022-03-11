@@ -80,6 +80,7 @@ class CenterHeadV2(nn.Module):
         init_bias=-2.19,
         share_conv_channel=64,
         num_hm_conv=2,
+        dataset='nuscenes',  #zhanghao
     ):
         super(CenterHeadV2, self).__init__()
 
@@ -94,6 +95,7 @@ class CenterHeadV2(nn.Module):
         self.crit = FastFocalLoss()
         self.crit_reg = RegLoss()
 
+        self.dataset = dataset
 
         if not logger:
             logger = logging.getLogger("CenterHead")

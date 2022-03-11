@@ -108,8 +108,9 @@ class PillarFeatureNet(nn.Module):
         self.y_offset = self.vy / 2 + pc_range[1]
 
     def forward(self, features, num_voxels, coors):
+        # print("PillarFeatureNet features.shape: ", features.shape)
+        
         device = features.device
-
         dtype = features.dtype
 
         # Find distance of x, y, and z from cluster center
@@ -144,6 +145,7 @@ class PillarFeatureNet(nn.Module):
         for pfn in self.pfn_layers:
             features = pfn(features)
 
+        # print("PillarFeatureNet features.shape: ", features.shape)
         return features.squeeze()
 
 

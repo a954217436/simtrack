@@ -135,11 +135,16 @@ class RPN(nn.Module):
                 xavier_init(m, distribution="uniform")
 
     def forward(self, x):
+        # print(x.shape)
         ups = []
         for i in range(len(self.blocks)):
             x = self.blocks[i](x)
             if i - self._upsample_start_idx >= 0:
                 ups.append(self.deblocks[i - self._upsample_start_idx](x))
+        
+        # for up in ups:
+        #     print(up.shape)
+
         if len(ups) > 0:
             x = torch.cat(ups, dim=1)
 

@@ -714,4 +714,5 @@ def eval_main(nusc, eval_version, res_path, eval_set, output_dir):
         output_dir=output_dir,
         verbose=True,
     )
-    metrics_summary = nusc_eval.main(plot_examples=0,)
+    # metrics_summary = nusc_eval.main(plot_examples=0)  # zhanghao
+    metrics_summary = nusc_eval.main(plot_examples=0,render_curves=False)

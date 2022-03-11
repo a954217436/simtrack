@@ -1,6 +1,7 @@
 from .builder import build_dataset
 
 from .nuscenes import NuScenesDataset
+from .waymo import WaymoDataset
 
 from .dataset_wrappers import ConcatDataset, RepeatDataset
 

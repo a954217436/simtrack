@@ -1,3 +1,8 @@
+"""
+python tools/val_nusc_tracking.py examples/point_pillars/configs/nusc_all_pp_centernet_tracking.py \
+    --work_dir work_dir/test1 \
+    --checkpoint model_zoo/simtrack_pillar.pth
+"""
 import argparse
 import copy
 import os
@@ -63,13 +68,14 @@ def tracking():
     cpu_device = torch.device("cpu")
 
     prev_detections = {}
-    nusc = NuScenes(version='v1.0-trainval', dataroot='./data/v1.0-trainval/', verbose=True)
+    # nusc = NuScenes(version='v1.0-trainval', dataroot='./data/v1.0-trainval/', verbose=True)
+    nusc = NuScenes(version='v1.0-mini', dataroot='/mnt/data/nuScenes-v1.0-mini/', verbose=True)
     grids = meshgrid(size_w, size_h)
 
+    # print("data_loader.size = ", len(data_loader))
     start_id = 0
     with torch.no_grad():
-        for _, data_batch in enumerate(data_loader):
-        
+        for iidx, data_batch in enumerate(data_loader):
             device = torch.device(args.local_rank)
             data_batch = example_to_device(data_batch, device, non_blocking=False)
 
@@ -114,6 +120,29 @@ def tracking():
                     else:
                         output[k] = v.clone().to(cpu_device)
             detections.update({token: output,})
+
+            #############################
+            #### zhanghao add 
+            # # save points to txt
+            # points = data_batch['points'].cpu().numpy()[:,1:6].astype(np.float32)
+            # mask = points[:,-1]==0
+            # points = points[mask][:,:4]
+            # print(points.shape)
+            # points.tofile("/mnt/data/nuScenes-v1.0-mini/val_sep/points/%d.bin"%iidx)
+
+            # save output to txt
+            bbb = output['box3d_lidar'].cpu().numpy()
+            sss = output['scores'].cpu().numpy().reshape(-1,1)
+            lll = output['label_preds'].cpu().numpy().reshape(-1,1)
+            iii = output['tracking_id'].cpu().numpy().reshape(-1,1)
+            all_data_npy = np.concatenate([iii,lll,bbb,sss], axis=1)
+            all_data_npy = all_data_npy[:, [0,1,2,3,4,5,6,7,8,11,9,10]]
+            # all_data_npy = all_data_npy[:, [0,1,2,3,4,6,5,7,8,11,9,10]]
+            # all_data_npy[:,8] = -np.pi/2.0 - all_data_npy[:,8]
+            np.savetxt("/mnt/data/nuScenes-v1.0-mini/val_sep/tk/%d.txt"%iidx, all_data_npy)
+
+            #### zhanghao add 
+            #############################
             
             prev_output = {}
             box3d_lidar = output['box3d_lidar'].clone().detach().cpu().numpy()

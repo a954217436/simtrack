@@ -16,6 +16,7 @@ class Reformat(object):
         pass
 
     def __call__(self, res, info):
+        # print(res.keys())
         meta = res["metadata"]
         points = res["lidar"]["points"]
         voxels = res["lidar"]["voxels"]
@@ -28,8 +29,8 @@ class Reformat(object):
             num_points=voxels["num_points"],
             num_voxels=voxels["num_voxels"],
             coordinates=voxels["coordinates"],
-            ref_from_car=res['ref_from_car'],
-            car_from_global=res['car_from_global'],
+            # ref_from_car=res['ref_from_car'],
+            # car_from_global=res['car_from_global'],
         )
 
         if res["mode"] == "train":

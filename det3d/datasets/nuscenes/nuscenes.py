@@ -152,7 +152,8 @@ class NuScenesDataset(PointCloudDataset):
         return self.get_sensor_data(idx)
 
     def evaluation(self, detections, output_dir=None, testset=False):
-        version = self.version
+        # version = self.version    #zhanghao
+        version = self.version = "v1.0-mini"
         eval_set_map = {
             "v1.0-mini": "mini_val",
             "v1.0-trainval": "val",
@@ -292,7 +293,9 @@ class NuScenesDataset(PointCloudDataset):
         return res, None
     
     def evaluation_tracking(self, detections, output_dir=None, testset=False):
-        version = self.version
+        # version = self.version
+        version = self.version = "v1.0-mini"     #zhanghao
+        print("evaluation_tracking: ", self.version)
         eval_set_map = {
             "v1.0-mini": "mini_val",
             "v1.0-trainval": "val",
@@ -373,10 +376,12 @@ class NuScenesDataset(PointCloudDataset):
         nusc_eval = TrackingEval(
             config=cfg,
             result_path=res_path,
-            eval_set='val',
+            # eval_set='val',     #zhanghao
+            eval_set='mini_val',
             output_dir=output_dir,
             verbose=True,
-            nusc_version="v1.0-trainval",
+            # nusc_version="v1.0-trainval",     #zhanghao
+            nusc_version="v1.0-mini",
             nusc_dataroot=self._root_path,
         )
         metrics_summary = nusc_eval.main()

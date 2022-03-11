@@ -1,0 +1,5 @@
+# ninja log v5
+0	1125	1646620580173066160	/home/zhanghao/code/master/4_TRACK/simtrack/det3d/ops/iou3d_nms/build/temp.linux-x86_64-3.6/src/iou3d_nms_kernel.o	d167ac0cefcadc27
+0	8393	1646620587437046209	/home/zhanghao/code/master/4_TRACK/simtrack/det3d/ops/iou3d_nms/build/temp.linux-x86_64-3.6/src/iou3d_nms.o	121e3409ba777c50
+0	8424	1646620587469046121	/home/zhanghao/code/master/4_TRACK/simtrack/det3d/ops/iou3d_nms/build/temp.linux-x86_64-3.6/src/iou3d_cpu.o	acbc8e863682bfde
+0	11623	1646620590669037361	/home/zhanghao/code/master/4_TRACK/simtrack/det3d/ops/iou3d_nms/build/temp.linux-x86_64-3.6/src/iou3d_nms_api.o	bfac76571ff9a8c7

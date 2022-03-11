@@ -75,4 +75,7 @@ def build_from_cfg(cfg, registry, default_args=None):
         for name, value in default_args.items():
             args.setdefault(name, value)
 
+    # print("+-"*50)
+    # print(obj_type, " build_from_cfg args: \n", args)
+    # print("+-"*50 + "\n")
     return obj_cls(**args)
