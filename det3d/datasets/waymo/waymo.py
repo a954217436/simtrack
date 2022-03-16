@@ -102,7 +102,8 @@ class WaymoDataset(PointCloudDataset):
 
         print("use waymo devkit tool for evaluation")
 
-        return None, None 
+        # return None, None 
+        return {"results":{}}, {} 
 
 
 

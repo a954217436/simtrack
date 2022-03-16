@@ -1,3 +1,4 @@
+import os
 import pickle
 from pathlib import Path
 
@@ -63,23 +64,27 @@ def create_groundtruth_database(
     else:
         raise NotImplementedError()
 
+    print("Using point_features : ", point_features)
+    print("Using nsweeps : ", dataset.nsweeps)
+
     db_path.mkdir(parents=True, exist_ok=True)
 
     all_db_infos = {}
     group_counter = 0
 
+    print("len(dataset) = ", len(dataset))
     for index in tqdm(range(len(dataset))):
         image_idx = index
         # modified to nuscenes
         sensor_data = dataset.get_sensor_data(index)
         if "image_idx" in sensor_data["metadata"]:
             image_idx = sensor_data["metadata"]["image_idx"]
+        # if nsweeps > 1: 
+        #     points = sensor_data["lidar"]["combined"]
+        # else:
+        #     points = sensor_data["lidar"]["points"]
+        points = sensor_data["lidar"]["points"]
 
-        if nsweeps > 1: 
-            points = sensor_data["lidar"]["combined"]
-        else:
-            points = sensor_data["lidar"]["points"]
-            
         annos = sensor_data["lidar"]["annotations"]
         gt_boxes = annos["boxes"]
         names = annos["names"]
@@ -111,10 +116,16 @@ def create_groundtruth_database(
         difficulty = np.zeros(gt_boxes.shape[0], dtype=np.int32)
         if "difficulty" in annos:
             difficulty = annos["difficulty"]
-
+        
+        
+        
         num_obj = gt_boxes.shape[0]
-        if num_obj == 0:
+        if num_obj == 0 or len(gt_boxes.shape)!=2:
+        # if num_obj == 0:    # zhanghao
+            print("token = ", sensor_data["metadata"]["token"])
+            print("gt_boxes.shape = ", gt_boxes.shape)
             continue 
+            
         point_indices = box_np_ops.points_in_rbbox(points, gt_boxes)
         for i in range(num_obj):
             if (used_classes is None) or names[i] in used_classes:
@@ -123,6 +134,7 @@ def create_groundtruth_database(
                 os.makedirs(dirpath, exist_ok=True)
 
                 filepath = os.path.join(str(db_path), names[i], filename)
+
                 gt_points = points[point_indices[:, i]]
                 gt_points[:, :3] -= gt_boxes[i, :3]
                 with open(filepath, "w") as f:
@@ -161,6 +173,7 @@ def create_groundtruth_database(
                     all_db_infos[names[i]].append(db_info)
                 else:
                     all_db_infos[names[i]] = [db_info]
+
 
     print("dataset length: ", len(dataset))
     for k, v in all_db_infos.items():
@@ -265,3 +278,14 @@ def create_groundtruth_database(
 
 #     with open(dbinfo_path, "wb") as f:
 #         pickle.dump(all_db_infos, f)
+
+
+
+if __name__ == "__main__":
+    create_groundtruth_database(
+        "WAYMO",
+        "./data/Waymo",
+        Path("./data/Waymo") / "simtrack_infos_train_{:02d}sweeps_filter_zero_gt.pkl".format(2),
+        used_classes=['VEHICLE', 'PEDESTRIAN'],
+        nsweeps=2
+    )

@@ -116,10 +116,16 @@ def create_groundtruth_database(
         difficulty = np.zeros(gt_boxes.shape[0], dtype=np.int32)
         if "difficulty" in annos:
             difficulty = annos["difficulty"]
-
+        
+        
+        
         num_obj = gt_boxes.shape[0]
-        if num_obj == 0:
+        if num_obj == 0 or len(gt_boxes.shape)!=2:
+        # if num_obj == 0:    # zhanghao
+            print("token = ", sensor_data["metadata"]["token"])
+            print("gt_boxes.shape = ", gt_boxes.shape)
             continue 
+            
         point_indices = box_np_ops.points_in_rbbox(points, gt_boxes)
         for i in range(num_obj):
             if (used_classes is None) or names[i] in used_classes:
@@ -280,6 +286,6 @@ if __name__ == "__main__":
         "WAYMO",
         "./data/Waymo",
         Path("./data/Waymo") / "simtrack_infos_train_{:02d}sweeps_filter_zero_gt.pkl".format(2),
-        used_classes=['VEHICLE', 'CYCLIST'],
+        used_classes=['VEHICLE', 'PEDESTRIAN'],
         nsweeps=2
     )

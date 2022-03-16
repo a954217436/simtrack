@@ -1,0 +1,30 @@
+INSTALL:
+
+cd det3d/ops/iou3d_nms
+python setup.py build_ext --inplace
+cd ../../..
+export PYTHONPATH="${PYTHONPATH}:/home/zhanghao/code/master/4_TRACK/simtrack"
+
+
+
+
+
+DATA_PREP:
+
+python tools/create_data.py waymo_data_prep --root_path=data/Waymo --split val --nsweeps=2
+python tools/create_data.py waymo_data_prep --root_path=data/Waymo --split train --nsweeps=2
+
+python det3d/datasets/utils/create_gt_database.py
+
+
+
+
+TRAIN:
+CUDA_VISIBLE_DEVICES=0 python tools/train.py experiments/pointpillars/configs/nusc_all_pp_centernet_tracking.py
+CUDA_VISIBLE_DEVICES=0,1 python -m torch.distributed.launch --nproc_per_node=2 tools/train.py experiments/pointpillars/configs/nusc_all_pp_centernet_tracking.py
+
+CUDA_VISIBLE_DEVICES=0 python tools/train.py experiments/pointpillars/configs/waymo_pp_centernet_tracking.py
+CUDA_VISIBLE_DEVICES=0,1 python -m torch.distributed.launch --nproc_per_node=2 tools/train.py experiments/pointpillars/configs/waymo_pp_centernet_tracking.py
+CUDA_VISIBLE_DEVICES=0,1,2,3 python -m torch.distributed.launch --nproc_per_node=4 tools/train.py experiments/pointpillars/configs/waymo_pp_centernet_tracking.py
+python -m torch.distributed.launch --nproc_per_node=8 tools/train.py experiments/pointpillars/configs/waymo_pp_centernet_tracking.py
+python -m torch.distributed.launch --nproc_per_node=4 tools/train.py experiments/pointpillars/configs/waymo_pp_centernet_tracking.py

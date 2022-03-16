@@ -59,6 +59,8 @@ def tracking():
     
     model = build_detector(cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
     _ = load_checkpoint(model, args.checkpoint, map_location="cpu")
+    print("Done loading checkpoints: ", args.checkpoint)
+    
     data_loader = build_dataloader(dataset, batch_size=1, workers_per_gpu=24, dist=False,shuffle=False,)
 
     model = model.cuda()

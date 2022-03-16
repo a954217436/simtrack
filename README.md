@@ -8,11 +8,6 @@ Exploring Simple 3D Multi-Object Tracking for Autonomous Driving, ICCV 2021<br>
 [[Paper]](https://arxiv.org/pdf/2108.10312.pdf) [[Poster]](poster.pdf) [[YouTube]](https://www.youtube.com/watch?v=awK1O-wf_74)
 
 
-## Change log
-
-* Add WaymoDataset Surpport. Usage is same as the nusc.
-
-
 ## Getting Started
 ### Installation
 Please refer to [INSTALL](INSTALL.md) for the detail.
