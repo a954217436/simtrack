@@ -66,11 +66,11 @@ train_cfg = dict(assigner=assigner)
 
 test_cfg = dict(
     nms=dict(
-        nms_pre_max_size=4096,
-        nms_post_max_size=500,
-        nms_iou_threshold=0.7,  #0.2
+        nms_pre_max_size=2048,  # 4096
+        nms_post_max_size=256,  # 500 
+        nms_iou_threshold=0.2,  # 0.2
     ),
-    score_threshold=0.1,
+    score_threshold=0.3,
     pc_range=[-74.88, -74.88],
     out_size_factor=get_downsample_factor(model),
     voxel_size=[0.32, 0.32],

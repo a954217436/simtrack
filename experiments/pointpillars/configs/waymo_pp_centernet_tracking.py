@@ -3,7 +3,8 @@ import logging
 
 from det3d.utils.config_tool import get_downsample_factor
 
-WAYMO_PATH = "/mnt/data/waymo_tiny_simtrack/"
+# WAYMO_PATH = "/mnt/data/waymo_tiny_simtrack/"
+WAYMO_PATH = "/mnt/data/waymo_opensets/"
 norm_cfg = None
 
 tasks = [
@@ -66,10 +67,10 @@ train_cfg = dict(assigner=assigner)
 test_cfg = dict(
     nms=dict(
         nms_pre_max_size=4096,
-        nms_post_max_size=500,
-        nms_iou_threshold=0.7,  #0.2
+        nms_post_max_size=300,  # 500
+        nms_iou_threshold=0.6,  # 0.2  0.7
     ),
-    score_threshold=0.1,
+    score_threshold=0.3,  # 0.1
     pc_range=[-74.88, -74.88],
     out_size_factor=get_downsample_factor(model),
     voxel_size=[0.32, 0.32],

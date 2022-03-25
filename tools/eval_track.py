@@ -14,16 +14,6 @@ from waymo_open_dataset.protos import metrics_pb2
 
 """
 
-# import uuid 
-# class UUIDGeneration():
-#     def __init__(self):
-#         self.mapping = {}
-#     def get_uuid(self,seed):
-#         if seed not in self.mapping:
-#             self.mapping[seed] = uuid.uuid4().hex 
-#         return self.mapping[seed]
-# uuid_gen = UUIDGeneration()
-
 
 class TrackinMetricsEstimatorTest(tf.test.TestCase):
     def _BuildConfig(self, additional_config_str=''):
@@ -32,7 +22,7 @@ class TrackinMetricsEstimatorTest(tf.test.TestCase):
 
         # OBJECT_TYPE adds 4 breakdowns
         # RANGE adds 12
-        config_text = """
+        self.config_text = """
         num_desired_score_cutoffs: 2
         breakdown_generator_ids: OBJECT_TYPE
         difficulties {
@@ -52,27 +42,8 @@ class TrackinMetricsEstimatorTest(tf.test.TestCase):
         score_cutoffs: 0.5
         score_cutoffs: 0.9
         """ + additional_config_str
-        # config_text = """
-        # num_desired_score_cutoffs: 2
-        # breakdown_generator_ids: OBJECT_TYPE
-        # difficulties {
-        # levels: LEVEL_1
-        # }
-        # breakdown_generator_ids: RANGE
-        # difficulties {
-        # levels: LEVEL_1
-        # }
-        # matcher_type: TYPE_HUNGARIAN
-        # iou_thresholds: 0.5
-        # iou_thresholds: 0.5
-        # iou_thresholds: 0.5
-        # iou_thresholds: 0.5
-        # iou_thresholds: 0.5
-        # box_type: TYPE_3D
-        # score_cutoffs: 0.5
-        # score_cutoffs: 0.9
-        # """ + additional_config_str
-        text_format.Merge(config_text, config)
+
+        text_format.Merge(self.config_text, config)
         return config
 
     def _BuildGraph(self, graph):
@@ -220,7 +191,7 @@ def load_txts(txt_path, frame_id=0, sequence_id='0', gt=True):
     return bboxes, types, frame_ids, sequence_ids, object_ids, scores, speed
 
 
-def calcMetrics(tk_path, anno_path = "/mnt/data/waymo_opensets/val/annos"):
+def calcMetrics(tk_path, anno_path = "/mnt/data/waymo_opensets/val/annos", seqs=range(202)):
     trackMetricsEst = TrackinMetricsEstimatorTest()
     graph = tf.Graph()
     metrics = trackMetricsEst._BuildGraph(graph)
@@ -228,11 +199,11 @@ def calcMetrics(tk_path, anno_path = "/mnt/data/waymo_opensets/val/annos"):
     with tf.compat.v1.Session(graph=graph) as sess:
         sess.run(tf.compat.v1.initializers.local_variables())
         
-        for sss in range(0, 202):
+        for sss in seqs:
             pd_bboxs, pd_types, pd_frame_ids, pd_sequence_ids, pd_object_ids, pd_scores, pd_speeds = [],[],[],[],[],[],[]
             gt_bboxs, gt_types, gt_frame_ids, gt_sequence_ids, gt_object_ids, gt_scores, gt_speeds = [],[],[],[],[],[],[]
             frame_nums = len(glob.glob(anno_path + "/seq_%d_frame_*.pkl"%(sss)))
-            print("frame_nums: ", frame_nums)
+            print(sss, ": total frame_nums: ", frame_nums)
             for i in range(frame_nums):
                 pd_infos = load_txts(tk_path + "/seq_%d_frame_%d.txt"%(sss,i), frame_id=i, sequence_id=str(sss), gt=False)                
                 gt_infos = load_annos(anno_path + "/seq_%d_frame_%d.pkl"%(sss,i), frame_id=i, sequence_id=str(sss))
@@ -303,12 +274,20 @@ def calcMetrics(tk_path, anno_path = "/mnt/data/waymo_opensets/val/annos"):
 
         mot_metrics = trackMetricsEst._EvalValueOps(sess, graph, metrics)
 
-        for k,v in mot_metrics.items():
-            print(k, v)
+        os.makedirs(tk_path + "/../metrics1/", exist_ok=True)
+        with open(tk_path + "/../metrics1/mota_wod.txt", "w") as www:
+            www.write("track result path : %s\n"%tk_path)
+            www.write("track seqs : %s\n"%str(seqs))
+            www.write("eval config : \n%s\n"%str(trackMetricsEst.config_text))
+
+            for k,v in mot_metrics.items():
+                print(k, v)
+                www.write("%s : %s \n"%(k, v))
             
 
 if __name__ == "__main__":
-    # calcMetrics(tk_path="/home/zhanghao/code/GL/trackingwithvelo/py/data/output/all/22521_stablelose4_velo52_angle_120/txt")
-    calcMetrics(tk_path="/home/zhanghao/code/GL/trackingwithvelo/py/data/output/all/centerpoint_result/evaluation/txt")
-    # calcMetrics(tk_path="/home/zhanghao/code/GL/trackingwithvelo/py/data/output/all/gt_track/txt")
+    # calcMetrics(tk_path="/home/zhanghao/code/GL/trackingwithvelo/py/data/output/all/22521_stablelose4_velo52_angle_120/txt", seqs=range(1))
+    # calcMetrics(tk_path="/home/zhanghao/code/GL/trackingwithvelo/py/data/output/all/centerpoint_result/evaluation/txt")
+    calcMetrics(tk_path="/home/zhanghao/code/master/4_TRACK/simtrack/work_dir/waymo/track_results_all_0.2/txt", seqs=range(202))
+    # calcMetrics(tk_path="/home/zhanghao/code/GL/trackingwithvelo/py/data/output/all/gt_track/txt", seqs=range(202))
 
