@@ -1,6 +1,3 @@
-# simtrack_waymo
-Exploring Simple 3D Multi-Object Tracking for Autonomous Driving (ICCV 2021)
-
 # 一、复现
 开源代码只支持 nuscenes dataset，为了与已实验的算法进行对比，需要在 waymo dataset 进行复现。
 ## 1.1 waymo 数据集处理
@@ -230,33 +227,13 @@ workflow = [("train", 1), ("val", 1)]
 ### 2.1.1 Detection mAP
 实验一的 32 个 epoch 训练完成后，在 waymo 验证集上测试 mAP，结果如下，为了便于分析，表中给出了 centerpoint 的一些指标。
 
-| **模型** | **验证参数** | **VEHICLE_LEVEL_2/mAP** | **VEHICLE_LEVEL_2/mAPH** | **VEHICLE_LEVEL_2 Recall@0.95** | **PEDESTRIAN_LEVEL_2/mAP** | **PEDESTRIAN_LEVEL_2/mAPH** | **PEDESTRIAN_LEVEL_2**
-**Recall@0.95** |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| **实验一**
-**simtrack_pp_two_cls_epoch32**
-**(2 sweeps, voxel=0.32)** | thresh=0.2,
-box=TYPE_2D,
-iou_thresh=[0.7,0.5]
-
- | 0.75064474 | 0.7406002 | 0.6000373 | 0.66397935 | 0.6066588 | 0.3614851 |
-| **实验二**
-**simtrack_pp_two_cls_epoch36**
-**(2 sweeps, voxel=0.2, 2heads)** | thresh=0.2,
-box=TYPE_2D,
-iou_thresh=[0.7,0.5] | 0.7087538 | 0.692822 | 0.59762186 | 0.68568736 | 0.6274929 | 0.43303108 |
-| waymo_centerpoint_pp_two_pfn_stride1_3x_epoch_36
-(1 sweep) | thresh=0.2,
-box=TYPE_2D,
-iou_thresh=[0.7,0.5] | 0.7405185 | 0.7319974 | 0.5260502 | 0.6105477 | 0.50858194 | 0.21582854 |
-| waymo_centerpoint_voxelnet_3x_epoch_36
-(1 sweep) | thresh=0.2,
-box=TYPE_2D,
-iou_thresh=[0.7,0.5] | 0.7535514 | 0.7450954 | 0.5848034 | 0.66580003 | 0.6019306 | 0.183324 |
-| waymo_centerpoint_voxelnet_2sweep_3x_epoch_36
-(2 sweeps) | thresh=0.2,
-box=TYPE_2D,
-iou_thresh=[0.7,0.5] | 0.76343805 | 0.7555981 | 0.54180664 | 0.6910058 | 0.65268767 | 0.17844498 |
+| **模型** | **验证参数** | **VEHICLE_LEVEL_2/mAP** | **VEHICLE_LEVEL_2/mAPH** | **VEHICLE_LEVEL_2 Recall@0.95** | **PEDESTRIAN_LEVEL_2/mAP** | **PEDESTRIAN_LEVEL_2/mAPH** | **PEDESTRIAN_LEVEL_2** **Recall@0.95** |
+| --- | --- | --- | --- | --- | --- | --- | --- |--- |
+| **实验一** **simtrack_pp_two_cls_epoch32** **(2 sweeps, voxel=0.32)** | thresh=0.2,box=TYPE_2D,iou_thresh=[0.7,0.5]| 0.75064474 | 0.7406002 | 0.6000373 | 0.66397935 | 0.6066588 | 0.3614851 |
+|**实验二** **simtrack_pp_two_cls_epoch36** **(2 sweeps, voxel=0.2, 2heads)** | thresh=0.2,box=TYPE_2D,iou_thresh=[0.7,0.5] | 0.7087538 | 0.692822 | 0.59762186 | 0.68568736 | 0.6274929 | 0.43303108 |
+| waymo_centerpoint_pp_two_pfn_stride1_3x_epoch_36 (1 sweep) | thresh=0.2,box=TYPE_2D,iou_thresh=[0.7,0.5] | 0.7405185 | 0.7319974 | 0.5260502 | 0.6105477 | 0.50858194 | 0.21582854 |
+| waymo_centerpoint_voxelnet_3x_epoch_36(1 sweep) |thresh=0.2,box=TYPE_2D,iou_thresh=[0.7,0.5] | 0.7535514 | 0.7450954 | 0.5848034 | 0.66580003 | 0.6019306 | 0.183324 |
+| waymo_centerpoint_voxelnet_2sweep_3x_epoch_36(2 sweeps) | thresh=0.2,box=TYPE_2D,iou_thresh=[0.7,0.5] | 0.76343805 | 0.7555981 | 0.54180664 | 0.6910058 | 0.65268767 | 0.17844498 |
 
 
 
