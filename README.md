@@ -249,15 +249,8 @@ workflow = [("train", 1), ("val", 1)]
 使用 epoch 32，在 waymo 验证集上测试 MOTA 指标，结果如下，为了便于分析，表中给出了之前所做的基于 KF 与 centerpoint 的一些指标。
 在 waymo validation 测试集，共 202 sequences，39987 frames，16912 条轨迹，1787380 个目标。
 
-| **Metric** | **KF-CA 优化 1** | **Centerpoint tracking** | **Simtrack 实验一**
-**(pp_2cls_epoch32, 2sweeps,**
-**voxel_size =(0.32,0.32),**
-**nms_cfg=[2048,500,0.1])**
-**
-| **Simtrack 实验二\*\*
-**(pp_2cls_epoch36, 2sweeps,**
-**voxel_size =(0.2,0.2),**
-**nms_cfg=[1024,256,0.2])** |
+
+| **Metric** | **KF-CA 优化 1** | **Centerpoint tracking** | **Simtrack 实验一** **(pp_2cls_epoch32, 2sweeps,voxel_size=(0.32,0.32),nms_cfg=[2048,500,0.1])**| **Simtrack 实验二pp_2cls_epoch36, 2sweeps,voxel_size=(0.2,0.2),****nms_cfg=[1024,256,0.2])** |
 | --- | --- | --- | --- | --- |
 | MOTA（总指标） | 0.6637 | 0.6524 | 0.6868 | 0.6770 |
 | TP（True Positive） | 1346584 | 1291394 | 1314345 | 1358232 |
@@ -277,25 +270,17 @@ workflow = [("train", 1), ("val", 1)]
 | AVE(60-80, km/h) | 2.3755 | 1.9279 | 2.4299 | 2.7611 |
 | AVE(80-∞ , km/h) | 1.6001 | 2.4082 | 2.9308 | 2.9169 |
 
+
 ## 2.3 NMS 的选择对 Detection mAP 影响
 
 针对实验一的检测模型，修改 NMS 方法进行测试（模型相同，都为 epoch_32.pth），实验了如下三种 NMS 方法，实验参数及测试结果如下：
 
-| **NMS 方法** | **参数** | **VEHICLE_LEVEL_2/mAP** | **VEHICLE_LEVEL_2/mAPH** | **VEHICLE_LEVEL_2 Recall@0.95** | **PEDESTRIAN_LEVEL_2/mAP** | **PEDESTRIAN_LEVEL_2/mAPH** | **PEDESTRIAN_LEVEL_2**
-**Recall@0.95** |
+| **NMS 方法** | **参数** | **VEHICLE_LEVEL_2/mAP** |**VEHICLE_LEVEL_2/mAPH** | **VEHICLE_LEVEL_2 Recall@0.95** |**PEDESTRIAN_LEVEL_2/mAP** | **PEDESTRIAN_LEVEL_2/mAPH** |**PEDESTRIAN_LEVEL_2** **Recall@0.95** |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| **NMS 方法** | **参数** | **VEHICLE_LEVEL_2/mAP** | **VEHICLE_LEVEL_2/mAPH** | **VEHICLE_LEVEL_2 Recall@0.95** | **PEDESTRIAN_LEVEL_2/mAP** | **PEDESTRIAN_LEVEL_2/mAPH** | **PEDESTRIAN_LEVEL_2**
-**Recall@0.95** |
-| Rotate NMS | score_threshold=0.2,
-nms_pre_max_size=1024,
-nms_post_max_size=256,
-nms_iou_threshold=0.2 | 0.73414207 | 0.72512126 | 0.6376742 | 0.68771183 | 0.6297276 | 0.30905744 |
-| Circle NMS | score_threshold=0.2,
-nms_pre_max_size=1024,
-nms_post_max_size=256,
-nms_iou_threshold=0.2,
-**min_radius=[4, 0.175]** | 0.73500246 | 0.7259521 | 0.6198849 | 0.68583196 | 0.62698156 | 0.3695327 |
+| Rotate NMS | score_threshold=0.2,nms_pre_max_size=1024,nms_post_max_size=256,nms_iou_threshold=0.2 | 0.73414207 | 0.72512126 | 0.6376742 | 0.68771183 | 0.6297276 | 0.30905744 |
+| Circle NMS | score_threshold=0.2,nms_pre_max_size=1024,nms_post_max_size=256,nms_iou_threshold=0.2,**min_radius=[4, 0.175]** | 0.73500246 | 0.7259521 | 0.6198849 | 0.68583196 | 0.62698156 | 0.3695327 |
 | ~~Max Pooling~~ | ~~kernel=3~~ | ~~0.46011257~~ | ~~0.45492992~~ | ~~0.0~~ | ~~0.5983365~~ | ~~0.5497276~~ | ~~0.26471835~~ |
+
 
 # 三、初步结论
 
